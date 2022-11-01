@@ -1,13 +1,15 @@
-import { useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { useSessionContext, useTheme } from './GlobalStateProvider'
 import LogoType from './Logotype'
-import { useSessionContext } from './SessionProvider'
 
 function Options({ setShowOptions }) {
   const sessionContext = useSessionContext()
   const closeSesion = async () => {
     await sessionContext.signOut()
   }
+  const [theme] = useTheme()
+  const styles = genStyles(theme)
 
   return (
     <View style={styles.SideOptionsContainer}>
@@ -32,7 +34,8 @@ function Options({ setShowOptions }) {
 
 export default function TopBar() {
   const [showOptions, setShowOptions] = useState(false)
-
+  const [theme] = useTheme()
+  const styles = genStyles(theme)
   return (
     <>
       <View style={styles.barContainer}>
@@ -40,7 +43,7 @@ export default function TopBar() {
           <View onTouchEnd={() => setShowOptions(!showOptions)}>
             <Image
               style={styles.bars}
-              source={require('../../../assets/images/bars.png')}
+              source={require('../../../assets/images/bars-blue.webp')}
             />
           </View>
           <Text style={styles.lighttext}>Busca personas o publicaciones</Text>
@@ -51,63 +54,70 @@ export default function TopBar() {
     </>
   )
 }
+const genStyles = (theme: 'light' | 'dark') => {
+  const backgroundColor = theme === 'light' ? '#fff' : '#1C1818'
+  const color = theme === 'light' ? '#000' : '#fff'
 
-const styles = StyleSheet.create({
-  SideOptionsContainer: {
-    position: 'absolute',
-    backgroundColor: '#fff',
-    width: '100%',
-    height: '100%',
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    zIndex: 3,
-  },
-  backButton: {
-    marginBottom: 30,
-  },
-  backButtonText: {
-    textDecorationLine: 'underline',
-  },
-  SideOption: {
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-    marginBottom: 30,
-    borderWidth: 0.5,
-    borderColor: '#999',
-  },
-  SideOptionText: {
-    color: '#000',
-    fontFamily: 'Poppins',
-  },
-  SideOptionSignOut: {
-    backgroundColor: '#ffadad',
-  },
-  barContainer: {
-    backgroundColor: '#fff',
-    width: '100%',
-    paddingTop: 40,
-    paddingBottom: 15,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  barsIconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  bars: {
-    width: 30,
-    height: 45,
-    marginRight: 10,
-  },
-  lighttext: {
-    fontFamily: 'Poppins',
-    fontWeight: '200',
-    fontSize: 11,
-  },
-  logoStyle: {
-    height: 60,
-    width: 60,
-  },
-})
+  return StyleSheet.create({
+    SideOptionsContainer: {
+      position: 'absolute',
+      backgroundColor,
+      width: '100%',
+      height: '100%',
+      paddingTop: 80,
+      paddingHorizontal: 20,
+      zIndex: 3,
+    },
+    backButton: {
+      marginBottom: 30,
+    },
+    backButtonText: {
+      textDecorationLine: 'underline',
+      color
+    },
+    SideOption: {
+      paddingVertical: 40,
+      paddingHorizontal: 30,
+      marginBottom: 30,
+      borderWidth: 0.5,
+      borderColor: '#999',
+    },
+    SideOptionText: {
+      color,
+      fontFamily: 'Poppins',
+    },
+    SideOptionSignOut: {
+      backgroundColor: '#F8A6A6'
+    },
+    barContainer: {
+      backgroundColor,
+      width: '100%',
+      paddingTop: 40,
+      paddingBottom: 15,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    barsIconContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    bars: {
+      width: 50,
+      height: 50,
+      marginRight: 10,
+      color
+    },
+    lighttext: {
+      fontFamily: 'Poppins',
+      fontWeight: '200',
+      fontSize: 11,
+      color
+    },
+    logoStyle: {
+      height: 60,
+      width: 60,
+    },
+  })
+}

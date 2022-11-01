@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "851818461329",
+    "project_id": "wnyapp-c105f",
+    "storage_bucket": "wnyapp-c105f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851818461329:android:412aa3e317489668bde730",
+        "android_client_info": {
+          "package_name": "com.wny.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851818461329-25o5k2kveor3rm2cnpshp663o7gs1vqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5G_sGzzBjnRdXW1c6se3zJX-XXlP8zEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851818461329-25o5k2kveor3rm2cnpshp663o7gs1vqq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851818461329:android:11fb91a7e8ee5376bde730",
+        "android_client_info": {
+          "package_name": "com.wnytyped.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851818461329-25o5k2kveor3rm2cnpshp663o7gs1vqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5G_sGzzBjnRdXW1c6se3zJX-XXlP8zEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851818461329-25o5k2kveor3rm2cnpshp663o7gs1vqq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

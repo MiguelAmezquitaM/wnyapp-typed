@@ -1,5 +1,5 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import { useCallback, useRef, useState } from 'react'
 import {
   View,
   ScrollView,
@@ -10,9 +10,13 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native'
-import { Message } from '../models/chats/Chat'
+import { Chat, Message } from '../models/chats/Chat'
 import { chatRepository } from '../models/chats/CurrentChatRepository'
-import { useChatContext, useUserContext } from './components/SessionProvider'
+import {
+  useChatContext,
+  useTheme,
+  useUserContext,
+} from './components/GlobalStateProvider'
 
 export default function ChatView() {
   const chat = useChatContext()
@@ -22,23 +26,18 @@ export default function ChatView() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchMessages()
-      const interval = setInterval(async () => {
-        await fetchMessages()
-      }, 5000)
+      const unsub = chatRepository.suscribeToChat(chat.chatId, updateChat)
 
       return () => {
-        clearInterval(interval)
-        chat.messages = messages
+        unsub()
       }
     }, [])
   )
 
-  const fetchMessages = async () => {
-    console.log('Fetching messages')
-    const updatedChat = await chatRepository.getMessages(chat.chatId)
-    console.log('Messages: ', updatedChat.messages)
-    setMessages(updatedChat.messages)
+  const updateChat = (c: Chat) => {
+    console.log('Receiving messages')
+    chat.messages = c.messages
+    setMessages(c.messages)
   }
 
   const sendMessage = async () => {
@@ -69,6 +68,10 @@ export default function ChatView() {
   }
 
   const scrollview = useRef<ScrollView>()
+  const [theme] = useTheme()
+  const styles = genStyles(theme)
+
+  const color = theme === 'dark' ? '#fff' : '#000'
 
   return (
     <View style={styles.container}>
@@ -90,7 +93,10 @@ export default function ChatView() {
       >
         {messages.map((message, i) => (
           <View style={position(message.owner)} key={i}>
-            <View style={[styles.messageContainer, borders(message.owner)]} key={i}>
+            <View
+              style={[styles.messageContainer, borders(message.owner)]}
+              key={i}
+            >
               <Text style={styles.messageContent}>{message.content}</Text>
             </View>
           </View>
@@ -102,6 +108,7 @@ export default function ChatView() {
           style={styles.messageInput}
           value={content}
           placeholder="Escribe un mensaje"
+          placeholderTextColor={color}
           onPressOut={() => {
             scrollview.current.scrollToEnd({ animated: true })
           }}
@@ -114,85 +121,92 @@ export default function ChatView() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    paddingHorizontal: '2%',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  topbar: {
-    marginTop: '12%',
-    marginBottom: '2%',
-    backgroundColor: '#2e5d60',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  userIcon: {
-    height: 50,
-    width: 50,
-    marginRight: 25,
-  },
-  suptext: {
-    fontFamily: 'Poppins',
-    fontSize: 16,
-    color: '#fff',
-  },
-  messageInputContainer: {
-    position: 'absolute',
-    bottom: '3%',
-    left: '2%',
-    right: '2%',
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#0000'
-  },
-  messageInput: {
-    fontFamily: 'Poppins',
-    fontSize: 13,
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#777',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginRight: 5,
-    borderTopLeftRadius: 15,
-    backgroundColor: '#fff'
-  },
-  sendbutton: {
-    backgroundColor: '#2e5d60',
-    height: '100%',
-    paddingHorizontal: 15,
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderBottomRightRadius: 15,
-  },
-  sendtext: {
-    color: '#fff',
-    fontFamily: 'Poppins',
-  },
-  messageContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-    paddingLeft: 15,
-    paddingRight: 20,
-    paddingVertical: 15,
-    backgroundColor: '#444',
-  },
-  messageContent: {
-    fontFamily: 'Poppins',
-    color: '#fff',
-  },
-  contentContainerScroll: {
-    paddingBottom: 75
-  },
-  scrollStyles: {
-    flex: 1,
-  },
-})
+const genStyles = (theme: 'light' | 'dark') => {
+  const backgroundColor = theme === 'light' ? '#fff' : '#1C1818'
+  const color = theme === 'light' ? '#1C1818' : '#fff'
+
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      paddingHorizontal: '2%',
+      justifyContent: 'center',
+      backgroundColor,
+    },
+    topbar: {
+      marginTop: '12%',
+      marginBottom: '2%',
+      backgroundColor: '#2e5d60',
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+    },
+    userIcon: {
+      height: 50,
+      width: 50,
+      marginRight: 25,
+    },
+    suptext: {
+      fontFamily: 'Poppins',
+      fontSize: 16,
+      color: '#fff',
+    },
+    messageInputContainer: {
+      position: 'absolute',
+      bottom: '3%',
+      left: '2%',
+      right: '2%',
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: '#0000',
+      color
+    },
+    messageInput: {
+      fontFamily: 'Poppins',
+      fontSize: 13, 
+      flex: 1,
+      borderWidth: 1,
+      borderColor: '#777',
+      paddingVertical: 10,
+      paddingHorizontal: 15,
+      marginRight: 5,
+      borderTopLeftRadius: 15,
+      backgroundColor,
+      color
+    },
+    sendbutton: {
+      backgroundColor: '#2e5d60',
+      height: '100%',
+      paddingHorizontal: 15,
+      alignItems: 'center',
+      flexDirection: 'row',
+      borderBottomRightRadius: 15,
+    },
+    sendtext: {
+      color: '#fff',
+      fontFamily: 'Poppins',
+    },
+    messageContainer: {
+      flexDirection: 'row',
+      marginBottom: 10,
+      paddingLeft: 15,
+      paddingRight: 20,
+      paddingVertical: 15,
+      backgroundColor: '#444',
+    },
+    messageContent: {
+      fontFamily: 'Poppins',
+      color: '#fff',
+    },
+    contentContainerScroll: {
+      paddingBottom: 75,
+    },
+    scrollStyles: {
+      flex: 1,
+    },
+  })
+}

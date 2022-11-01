@@ -1,0 +1,43 @@
+{
+    "expo": {
+      "name": "wnyapp-typed",
+      "slug": "wnyapp-typed",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/images/icon.png",
+      "userInterfaceStyle": "light",
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
+      "updates": {
+        "fallbackToCacheTimeout": 0
+      },
+      "assetBundlePatterns": [
+        "**/*"
+      ],
+      "ios": {
+        "supportsTablet": true
+      },
+      "android": {
+        "googleServicesFile": "./google-services.json",
+        "adaptiveIcon": {
+          "foregroundImage": "./assets/images/adaptive-icon.png",
+          "backgroundColor": "#FFFFFF"
+        },
+        "package": "com.wnytyped.app"
+      },
+      "web": {
+        "favicon": "./assets/images/favicon.png"
+      },
+      "plugins": [
+        "@react-native-firebase/app"
+      ],
+      "extra": {
+        "eas": {
+          "projectId": "d0c83ee6-85ca-42fe-b964-9096887a6a66"
+        }
+      }
+    }
+  }

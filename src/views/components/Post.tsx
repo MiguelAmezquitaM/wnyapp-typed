@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { userRepository } from '../../models/users/CurrentUserRepository'
 import { Post as PostType } from '../../models/posts/Post'
 import { postRepository } from '../../models/posts/CurrentPostRepository'
-import { useUserContext } from './SessionProvider'
+import { useTheme, useUserContext } from './GlobalStateProvider'
 
 export default function Post({ postInfo }: { postInfo: PostType }) {
   const [showOptions, setShowOptions] = useState(false)
@@ -55,7 +55,9 @@ export default function Post({ postInfo }: { postInfo: PostType }) {
       if (indexUser === -1) {
         post.reactions.push(userContext.username)
       } else {
-        post.reactions = post.reactions.filter((r) => r !== userContext.username)
+        post.reactions = post.reactions.filter(
+          (r) => r !== userContext.username
+        )
       }
 
       if (postRepository.updatePost(post)) {
@@ -66,6 +68,10 @@ export default function Post({ postInfo }: { postInfo: PostType }) {
       return alert('ocurrió un error')
     }
   }
+
+  const [theme] = useTheme()
+
+  const styles = genStyles(theme)
 
   return (
     <View
@@ -101,7 +107,7 @@ export default function Post({ postInfo }: { postInfo: PostType }) {
                 : require('../../../assets/images/heart-icon.png')
             }
           />
-          <Text>{likeCounter}</Text>
+          <Text style={styles.reactionColor}>{likeCounter}</Text>
         </View>
       </View>
 
@@ -123,87 +129,99 @@ export default function Post({ postInfo }: { postInfo: PostType }) {
   )
 }
 
-const styles = StyleSheet.create({
-  postContainer: {
-    width: '90%',
-    borderColor: '#bbb',
-    borderWidth: 0.5,
-    padding: 15,
-    marginBottom: 20,
-    backgroundColor: '#fff',
+const genStyles = (theme: 'light' | 'dark') => {
+  const backgroundColor = theme === 'light' ? '#fff' : '#71FDFF44'
+  const color = theme === 'light' ? '#000' : '#fff'
 
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 6,
+  return StyleSheet.create({
+    postContainer: {
+      width: '90%',
+      borderColor: '#222',
+      borderWidth: 0.5,
+      padding: 15,
+      marginBottom: 20,
+      backgroundColor,
+
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.67,
+      elevation: 5,
     },
-    shadowOpacity: 0.67,
-    elevation: 5,
-  },
-  postWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  postUserInfo: {
-    flexDirection: 'row',
-  },
-  wrapperUserPhoto: {
-    borderRadius: 50,
-  },
-  userPhoto: {
-    height: 50,
-    width: 50,
-  },
-  wrapperUserName: {
-    justifyContent: 'center',
-    marginLeft: 10,
-  },
-  usernameText: {
-    fontFamily: 'Poppins',
-    fontSize: 14,
-  },
-  behaviorText: {
-    fontFamily: 'Poppins',
-    fontSize: 10,
-  },
-  dottsWrapper: {
-    alignItems: 'flex-start',
-  },
-  dotts: {
-    fontSize: 24,
-    fontWeight: '800',
-  },
-  textPost: {
-    fontFamily: 'Poppins',
-    fontSize: 12,
-  },
-  interactionsContainer: {
-    paddingTop: 10,
-  },
-  interaction: {
-    flexDirection: 'row',
-  },
-  interactionIcon: {
-    height: 20,
-    width: 20,
-    marginRight: 5,
-  },
-  optionsPost: {
-    position: 'absolute',
-    backgroundColor: '#000',
-    width: '40%',
-    right: 0,
-    top: 60,
-    padding: 10,
-    zIndex: 2,
-  },
-  optionWrap: {
-    marginVertical: 5,
-  },
-  textOptions: {
-    fontFamily: 'Poppins',
-    color: '#fff',
-    flex: 1,
-  },
-})
+    postWrapper: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 10,
+    },
+    postUserInfo: {
+      flexDirection: 'row',
+    },
+    wrapperUserPhoto: {
+      borderRadius: 50,
+    },
+    userPhoto: {
+      height: 50,
+      width: 50,
+    },
+    wrapperUserName: {
+      justifyContent: 'center',
+      marginLeft: 10,
+    },
+    usernameText: {
+      fontFamily: 'Poppins',
+      fontSize: 14,
+      color
+    },
+    behaviorText: {
+      fontFamily: 'Poppins',
+      fontSize: 10,
+      color
+    },
+    dottsWrapper: {
+      alignItems: 'flex-start',
+    },
+    dotts: {
+      fontSize: 24,
+      fontWeight: '800',
+      color
+    },
+    textPost: {
+      fontFamily: 'Poppins',
+      fontSize: 12,
+      color
+    },
+    interactionsContainer: {
+      paddingTop: 10,
+    },
+    interaction: {
+      flexDirection: 'row',
+    },
+    reactionColor: {
+      color
+    },
+    interactionIcon: {
+      height: 20,
+      width: 20,
+      marginRight: 5,
+    },
+    optionsPost: {
+      position: 'absolute',
+      backgroundColor: '#000',
+      width: '40%',
+      right: 0,
+      top: 60,
+      padding: 10,
+      zIndex: 2,
+    },
+    optionWrap: {
+      marginVertical: 5,
+    },
+    textOptions: {
+      fontFamily: 'Poppins',
+      flex: 1,
+      color: '#fff'
+    },
+  })
+}

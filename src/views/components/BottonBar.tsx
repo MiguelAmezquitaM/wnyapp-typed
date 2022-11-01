@@ -1,7 +1,11 @@
 import { StyleSheet, View } from 'react-native'
 import ButtonB from './ButtonB'
+import { useTheme } from './GlobalStateProvider'
 
 export default function BottonBar({ navigation, route }) {
+  const [theme] = useTheme()
+  const styles = genStyles(theme)
+
   return (
     <View style={styles.bottonBarContainer}>
       <View style={styles.secBottonBarContainer}>
@@ -25,18 +29,22 @@ export default function BottonBar({ navigation, route }) {
   )
 }
 
-const styles = StyleSheet.create({
-  bottonBarContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    // backgroundColor: '#000'
-  },
-  secBottonBarContainer: {
-    backgroundColor: '#000',
-    paddingHorizontal: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderRadius: 20,
-  },
-})
+const genStyles = (theme: 'light' | 'dark') => {
+  const backgroundColor = theme === 'light' ? '#000' : '#333'
+
+  return StyleSheet.create({
+    bottonBarContainer: {
+      width: '100%',
+      paddingHorizontal: 20,
+      paddingBottom: 20,
+      backgroundColor: '#0000'
+    },
+    secBottonBarContainer: {
+      backgroundColor,
+      paddingHorizontal: 40,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      borderRadius: 20,
+    },
+  })
+}

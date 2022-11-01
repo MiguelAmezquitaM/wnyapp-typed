@@ -13,4 +13,6 @@ export interface ChatRepository {
     request(who: string): Promise<boolean>
 
     chatsOf(who: string): Promise<Chat[]>
+
+    suscribeToChat(chatId: string, fun: (c: Chat) => void): () => void
 }

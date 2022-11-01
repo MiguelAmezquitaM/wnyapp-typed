@@ -1,16 +1,23 @@
+import { ThemeProvider } from '@react-navigation/native'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { Chat } from '../../models/chats/Chat'
 import { userRepository } from '../../models/users/CurrentUserRepository'
 import { User } from '../../models/users/User'
 import { session } from '../../Session'
 
-const UserContext = createContext<User>(null)
-const SessionContext = createContext<{
+type setUser = {
   signIn: (un: string, ut: string) => Promise<void>
   signOut: () => Promise<void>
-}>(null)
+}
+
+type theme = 'dark' | 'light'
+type setTheme = (t: theme) => void
+
+const UserContext = createContext<User>(null)
+const SessionContext = createContext<setUser>(null)
 const ChatContext = createContext<Chat>(null)
 const ChatMannager = createContext<(chat: Chat) => void>(null)
+const ThemeContext = createContext<[theme, setTheme]>(null)
 
 export const useUserContext = () => {
   return useContext(UserContext)
@@ -28,9 +35,14 @@ export const useChatMannager = () => {
   return useContext(ChatMannager)
 }
 
-export default function SessionProvider({ children }) {
+export const useTheme = () => {
+  return useContext(ThemeContext)
+}
+
+export default function GlobalStateProvider({ children }) {
   const [user, setUser] = useState<User>(null)
   const [chat, setChat] = useState<Chat>(null)
+  const [theme, setTheme] = useState<theme>('light')
 
   useEffect(() => {
     getSession()
@@ -67,7 +79,9 @@ export default function SessionProvider({ children }) {
       <SessionContext.Provider value={sessionContext}>
         <ChatContext.Provider value={chat}>
           <ChatMannager.Provider value={setChat}>
-            {children || null}
+            <ThemeContext.Provider value={[theme, setTheme]}>
+              {children}
+            </ThemeContext.Provider>
           </ChatMannager.Provider>
         </ChatContext.Provider>
       </SessionContext.Provider>

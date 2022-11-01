@@ -1,7 +1,7 @@
 import { View, ScrollView, Text, StyleSheet, Image } from 'react-native'
 import { useEffect, useState } from 'react'
 import { chatRepository } from '../models/chats/CurrentChatRepository'
-import { useChatMannager, useUserContext } from './components/SessionProvider'
+import { useChatMannager, useUserContext } from './components/GlobalStateProvider'
 import BottonBar from './components/BottonBar'
 import TopBar from './components/TopBar'
 import { useNavigation, useRoute } from '@react-navigation/native'

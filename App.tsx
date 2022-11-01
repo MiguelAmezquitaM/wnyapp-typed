@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
 import { useState } from 'react'
-import SessionProvider, {
+import GlobalStateProvider, {
   useChatContext,
   useUserContext,
-} from './src/views/components/SessionProvider'
+} from './src/views/components/GlobalStateProvider'
 import LoadScreen from './src/views/Loading'
 import Welcome from './src/views/Welcome'
 import Login from './src/views/Login'
@@ -76,8 +76,8 @@ function AppWrapper() {
 
 export default function App() {
   return (
-    <SessionProvider>
+    <GlobalStateProvider>
       <AppWrapper />
-    </SessionProvider>
+    </GlobalStateProvider>
   )
 }

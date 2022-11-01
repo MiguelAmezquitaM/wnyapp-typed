@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, deleteDoc, doc, FirestoreDataConverter, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, deleteDoc, doc, FirestoreDataConverter, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { fireDB } from "../../Database";
 import { Chat, Message } from "./Chat";
 import { ChatRepository } from "./ChatRepository";
@@ -26,6 +26,15 @@ const QueuedConverted: FirestoreDataConverter<Queued> = {
 }
 
 export class ChatFirestoreRepository implements ChatRepository {
+    suscribeToChat(chatId: string, fun: (chat: Chat) => void) {
+        const docRef = doc(fireDB, 'chats', chatId).withConverter(ChatConverter)
+
+        const unSub = onSnapshot(docRef, (snap) => {
+            fun(snap.data())
+        })
+
+        return unSub
+    }
     async accept(who: string): Promise<void> {
         const docsSnap = await getDocs(collection(fireDB, 'queue').withConverter(QueuedConverted))
 
